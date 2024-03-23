@@ -14,7 +14,7 @@ from sklearn.model_selection import KFold
 ========================================================================
 """
 
-ID1 = 123456789  # TODO: change it to your personal ID 
+ID1 = 207502444  # TODO: change it to your personal ID
 ID2 = 987654321  # TODO: change it to your personal ID 
 
 
@@ -36,15 +36,9 @@ def accuracy(y: np.array, y_pred: np.array):
     :param y_pred: Predictions vector of shape (N,)
     :return: The prediction accuracy as a fraction.
     """
-    # TODO: Calculate prediction accuracy. Don't use an explicit loop.
-
     assert y.shape == y_pred.shape
     assert y.ndim == 1
-
-    # ====== YOUR CODE: ======
-    raise NotImplementedError
-    # ========================
-
+    accuracy_val = np.sum(y == y_pred) / len(y)
     return accuracy_val
 
 
