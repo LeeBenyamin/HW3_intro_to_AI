@@ -15,34 +15,34 @@ def example_driver():
     This is an example of a driver function, after implementing the functions
     in "value_and_policy_iteration.py" you will be able to run this code with no errors.
     """
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("Board", help="A file that holds the board and the reward for each state")
-    parser.add_argument("TerminalStates", help="A file that contains the terminal states in the board")
-    parser.add_argument("TransitionFunction", help="A file that contains the transition function")
-    args = parser.parse_args()
-
-    board = args.Board
-    terminal_states = args.TerminalStates
-    transition_function = args.TransitionFunction
-
-    is_valid_file(parser, board)
-    is_valid_file(parser, terminal_states)
+    #
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument("Board", help="A file that holds the board and the reward for each state")
+    # parser.add_argument("TerminalStates", help="A file that contains the terminal states in the board")
+    # parser.add_argument("TransitionFunction", help="A file that contains the transition function")
+    # args = parser.parse_args()
+    #
+    # board = args.Board
+    # terminal_states = args.TerminalStates
+    # transition_function = args.TransitionFunction
+    #
+    # is_valid_file(parser, board)
+    # is_valid_file(parser, terminal_states)
 
     board_env = []
-    with open(board, 'r') as f:
+    with open(r'C:\Users\97250\Desktop\bina3\HW3_FILES\MDP\board', 'r') as f:
         for line in f.readlines():
             row = line[:-1].split(',')
             board_env.append(row)
 
     terminal_states_env = []
-    with open(terminal_states, 'r') as f:
+    with open(r'C:\Users\97250\Desktop\bina3\HW3_FILES\MDP\terminal_states', 'r') as f:
         for line in f.readlines():
             row = line[:-1].split(',')
             terminal_states_env.append(tuple(map(int, row)))
 
     transition_function_env = {}
-    with open(transition_function, 'r') as f:
+    with open(r'C:\Users\97250\Desktop\bina3\HW3_FILES\MDP\transition_function', 'r') as f:
         for line in f.readlines():
             action, prob = line[:-1].split(':')
             prob = prob.split(',')
@@ -91,8 +91,8 @@ def example_driver():
     print("\nInitial policy:")
     mdp.print_policy(policy)
     print("\nFinal policy:")
-    policy_new = policy_iteration(mdp, policy)
-    mdp.print_policy(policy_new)
+    # policy_new = policy_iteration(mdp, policy)
+    # mdp.print_policy(policy_new)
 
     print("Done!")
 
