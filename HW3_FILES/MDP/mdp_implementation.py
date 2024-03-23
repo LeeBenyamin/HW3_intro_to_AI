@@ -50,9 +50,9 @@ def get_policy(mdp, U):
 
     # ====== YOUR CODE: ======
     policy = deepcopy(U)
-    valid_states = [(i, j) for i in range(mdp.num_row) for j in range(mdp.num_col) if mdp.board[i][j] != 'WALL']
+    valid_states = [(i, j) for i in range(mdp.num_row) for j in range(mdp.num_col)]
     for i, j in valid_states:
-        if (i, j) in mdp.terminal_states:
+        if (i, j) in mdp.terminal_states or mdp.board[i][j] == 'WALL':
             policy[i][j] = None
             continue
         else:
