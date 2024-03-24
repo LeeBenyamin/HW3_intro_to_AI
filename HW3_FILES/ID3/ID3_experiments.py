@@ -86,7 +86,7 @@ def cross_validation_experiment(plot_graph=True):
 
     # ====== YOUR CODE: ======
     assert len(m_choices) >= 5, 'fill the m_choices list with  at least 5 different values for M.'
-    raise NotImplementedError
+
 
     # ========================
     accuracies_mean = np.array([np.mean(acc) * 100 for acc in accuracies])

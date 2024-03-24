@@ -120,8 +120,10 @@ class ID3:
         """
         best_question = None
         true_branch, false_branch = None, None
-        best_gain, best_question, best_true_rows, best_true_labels, best_false_rows, best_false_labels = \
-            self.find_best_split(rows, labels)
+
+        if len(labels) <= 1:
+            return Leaf(rows, labels)
+        best_gain, best_question, best_true_rows, best_true_labels, best_false_rows, best_false_labels = self.find_best_split(rows, labels)
 
         if best_gain == 0 or len(best_true_rows) < self.min_for_pruning or len(best_false_rows) < self.min_for_pruning:
             return Leaf(rows, labels)
