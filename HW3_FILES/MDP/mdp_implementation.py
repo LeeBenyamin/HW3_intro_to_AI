@@ -16,7 +16,7 @@ def value_iteration(mdp, U_init, epsilon=10 ** (-3)):
 
         valid_states = [(i, j) for i in range(mdp.num_row) for j in range(mdp.num_col) if mdp.board[i][j] != 'WALL']
         for i, j in valid_states:
-            if (i, j) in mdp.terminal_states or mdp.board[i][j] == 'WALL':
+            if (i, j) in mdp.terminal_states:
                 U_init[i][j] = float(mdp.board[i][j])
             else:
                 max_utility = None
@@ -24,8 +24,7 @@ def value_iteration(mdp, U_init, epsilon=10 ** (-3)):
                 for action in mdp.actions.keys():
                     p = mdp.transition_function[action]
                     utility_list = []
-                    for action in mdp.actions.keys():
-                        next_state = mdp.step(curr_state, action)
+                    for next_state in [mdp.step(curr_state, a) for a in mdp.actions.keys()]:
                         utility_list.append(U[next_state[0]][next_state[1]])
                     curr_utility = sum(np.array(p) * np.array(utility_list))
 
@@ -50,29 +49,30 @@ def get_policy(mdp, U):
 
     # ====== YOUR CODE: ======
     policy = deepcopy(U)
-    valid_states = [(i, j) for i in range(mdp.num_row) for j in range(mdp.num_col)]
-    for i, j in valid_states:
-        if (i, j) in mdp.terminal_states or mdp.board[i][j] == 'WALL':
-            policy[i][j] = None
-            continue
-        else:
-            max_utility = None
-            max_action = None
-            for action in mdp.actions.keys():
-                curr_state = (i, j)
-                p = mdp.transition_function[action]
-                utility_list = []
-                for action in mdp.actions.keys():
-                    next_state = mdp.step(curr_state, action)
-                    utility_list.append(U[next_state[0]][next_state[1]])
-                curr_utility = sum(np.array(p) * np.array(utility_list))
+    valid_states = [(i, j) for i in range(mdp.num_row) for j in range(mdp.num_col) if (i,j) not in mdp.terminal_states
+                    or mdp.board[i][j] != 'WALL']
+    for curr_state in valid_states:
+        max_utility = None
+        max_action = None
+        for action in mdp.actions.keys():
+            p = mdp.transition_function[action]
+            utility_list = []
+            for next_state in [mdp.step(curr_state, a) for a in mdp.actions.keys()]:
+                utility_list.append(U[next_state[0]][next_state[1]])
 
-                if max_utility is None or max_utility < curr_utility:
-                    max_utility = curr_utility
-                    max_action = action
+            curr_utility = sum(np.array(p) * np.array(utility_list))
 
+            if max_utility is None or max_utility < curr_utility:
+                max_utility = curr_utility
+                max_action = action
+
+            i, j = curr_state
             policy[i][j] = max_action
 
+    none_policy_state = [(i, j) for i in range(mdp.num_row) for j in range(mdp.num_col) if (i, j) in mdp.terminal_states
+                         or mdp.board[i][j] == 'WALL']
+    for i, j in none_policy_state:
+        policy[i][j] = None
     return policy
     # ========================
 
@@ -91,21 +91,23 @@ def policy_evaluation(mdp, policy):
 
     p_mat = np.zeros((num_states, num_states))
     r_mat = np.zeros(num_states)
-    for s_idx in range(num_states):
-        s = idx_to_state(s_idx, mdp)
 
-        if (s in mdp.terminal_states) or (mdp.board[s[0]][s[1]] == 'WALL'):
+    for s_idx in range(num_states):
+        i, j = idx_to_state(s_idx, mdp)
+        if ((i, j) in mdp.terminal_states) or (mdp.board[i][j] == 'WALL'):
             continue
 
-        r_mat[s_idx] = float(mdp.board[s[0]][s[1]])
+        r_mat[s_idx] = float(mdp.board[i][j])
 
         for next_idx in range(num_states):
             p = 0
             next_s = idx_to_state(next_idx, mdp)
+
             for action_idx, action in enumerate(actions):
-                if mdp.step(s, action) == next_s:
-                    curr_policy = policy[s[0]][s[1]]
+                if mdp.step((i,j), action) == next_s:
+                    curr_policy = policy[i][j]
                     p += mdp.transition_function[curr_policy][action_idx]
+
             p_mat[s_idx, next_idx] = p
 
     x = np.linalg.inv(np.identity(num_states) + (-mdp.gamma) * p_mat)
@@ -116,12 +118,37 @@ def policy_evaluation(mdp, policy):
 
 
 def policy_iteration(mdp, policy_init):
-    # TODO:
     # Given the mdp, and the initial policy - policy_init
     # run the policy iteration algorithm
     # return: the optimal policy
     #
 
     # ====== YOUR CODE: ======
-    raise NotImplementedError
+    policy = deepcopy(policy_init)
+    changed = True
+    while changed:
+        utility = policy_evaluation(mdp, policy)
+        changed = False
+        valid_states = [(i, j) for i in range(mdp.num_row) for j in range(mdp.num_col) if (i, j) not in mdp.terminal_states or mdp.board[i][j] != 'WALL']
+        for i, j in valid_states:
+            max_utility, max_action = None, None
+            for act in list(mdp.actions):
+                probability = mdp.transition_function[act]
+                list_utility = [p * utility[i][j] for p in probability]
+                curr_utility = sum(list_utility)
+
+                if max_utility is None or max_utility < curr_utility:
+                    max_utility = curr_utility
+                    max_action = act
+
+            if policy[i][j] != max_action:
+                policy[i][j] = max_action
+                changed = True
+
+    none_policy_state = [(i, j) for i in range(mdp.num_row) for j in range(mdp.num_col) if (i, j) in mdp.terminal_states
+                         or mdp.board[i][j] == 'WALL']
+    for i, j in none_policy_state:
+        policy[i][j] = None
+
+    return policy
     # ========================

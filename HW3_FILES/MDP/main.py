@@ -91,8 +91,8 @@ def example_driver():
     print("\nInitial policy:")
     mdp.print_policy(policy)
     print("\nFinal policy:")
-    # policy_new = policy_iteration(mdp, policy)
-    # mdp.print_policy(policy_new)
+    policy_new = policy_iteration(mdp, policy)
+    mdp.print_policy(policy_new)
 
     print("Done!")
 
