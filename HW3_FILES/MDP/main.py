@@ -30,19 +30,19 @@ def example_driver():
     # is_valid_file(parser, terminal_states)
 
     board_env = []
-    with open(r'C:\Users\97250\Desktop\bina3\HW3_FILES\MDP\board', 'r') as f:
+    with open('./board', 'r') as f:
         for line in f.readlines():
             row = line[:-1].split(',')
             board_env.append(row)
 
     terminal_states_env = []
-    with open(r'C:\Users\97250\Desktop\bina3\HW3_FILES\MDP\terminal_states', 'r') as f:
+    with open('./terminal_states', 'r') as f:
         for line in f.readlines():
             row = line[:-1].split(',')
             terminal_states_env.append(tuple(map(int, row)))
 
     transition_function_env = {}
-    with open(r'C:\Users\97250\Desktop\bina3\HW3_FILES\MDP\transition_function', 'r') as f:
+    with open('./transition_function', 'r') as f:
         for line in f.readlines():
             action, prob = line[:-1].split(':')
             prob = prob.split(',')
