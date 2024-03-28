@@ -87,13 +87,13 @@ class ID3:
         :param labels: rows data labels.
         :return: Tuple of (best_gain, best_question, best_true_rows, best_true_labels, best_false_rows, best_false_labels)
         """
+        num_features = rows.shape[1]
         best_gain = - math.inf  # keep track of the best information gain
         best_question = None  # keep train of the feature / value that produced it
         best_false_rows, best_false_labels = None, None
         best_true_rows, best_true_labels = None, None
         current_uncertainty = self.entropy(rows, labels)
-
-        for feature in range(rows.shape[1]):
+        for feature in range(num_features):
             values = np.sort(rows[:, feature])
             for label in set(labels):
                 for value in range(len(values) - 1):
@@ -120,13 +120,11 @@ class ID3:
         """
         best_question = None
         true_branch, false_branch = None, None
-
-        if len(labels) <= 1:
+        if self.entropy(rows, labels) == 0 or len(rows) < self.min_for_pruning:
             return Leaf(rows, labels)
-        best_gain, best_question, best_true_rows, best_true_labels, best_false_rows, best_false_labels = self.find_best_split(rows, labels)
 
-        if best_gain == 0 or len(best_true_rows) < self.min_for_pruning or len(best_false_rows) < self.min_for_pruning:
-            return Leaf(rows, labels)
+        best_gain, best_question, best_true_rows, best_true_labels, best_false_rows, best_false_labels = \
+            self.find_best_split(rows, labels)
 
         true_branch = self.build_tree(np.array(best_true_rows), np.array(best_true_labels))
         false_branch = self.build_tree(np.array(best_false_rows), np.array(best_false_labels))
@@ -140,7 +138,6 @@ class ID3:
         :param y_train: training data labels.
         """
         self.tree_root = self.build_tree(x_train, y_train)
-
 
     def predict_sample(self, row, node: DecisionNode or Leaf = None):
         """
