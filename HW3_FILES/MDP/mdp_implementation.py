@@ -166,8 +166,6 @@ def policy_iteration(mdp, policy_init):
     # ========================
 
 """For this functions, you can import what ever you want """
-
-
 def get_all_policies(mdp, U):  # You can add more input parameters as needed
     # TODO:
     # Given the mdp, and the utility value U (which satisfies the Belman equation)
@@ -178,7 +176,12 @@ def get_all_policies(mdp, U):  # You can add more input parameters as needed
     #
 
     # ====== YOUR CODE: ======
-    raise NotImplementedError
+    num_policies = 0
+
+    # Visualize or print the policies
+    # (You can implement visualization based on your preference)
+
+    return num_policies
     # ========================
 
 
