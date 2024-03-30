@@ -102,13 +102,15 @@ def policy_evaluation(mdp, policy):
 
     p_mat = np.zeros((num_states, num_states))
     r_mat = np.zeros(num_states)
-
     for s_idx in range(num_states):
         i, j = idx_to_state(s_idx, mdp)
-        if ((i, j) in mdp.terminal_states) or (mdp.board[i][j] == 'WALL'):
-            continue
 
+        if mdp.board[i][j] == 'WALL':
+            continue
         r_mat[s_idx] = float(mdp.board[i][j])
+
+        if (i, j) in mdp.terminal_states:
+            continue
 
         for next_idx in range(num_states):
             p = 0
@@ -171,7 +173,7 @@ def policy_iteration(mdp, policy_init):
 
 from termcolor import colored
 
-def evaluate_state(mdp, U, state, epsilon=1e-3):
+def evaluate_state(mdp, U, state, epsilon=1e-4):
     i, j = state
     if mdp.board[i][j] and mdp.board[i][j] != 'WALL':
         R = float(mdp.board[i][j])
@@ -341,7 +343,7 @@ def get_policy_for_different_rewards(mdp):  # You can add more input parameters 
     prev_policies = None
 
     reward = min_reward
-    r_res = 0.05
+    r_res = 0.005
     while reward <= max_reward:
         reward = round(reward, 5)
 
