@@ -1,8 +1,8 @@
 import argparse
 import os
 from mdp import MDP
-from mdp_implementation import value_iteration, get_policy, policy_evaluation, policy_iteration, get_all_policies, \
-    print_policy, get_policy_for_different_rewards
+from mdp_implementation import value_iteration, get_policy, policy_evaluation, policy_iteration, get_all_policies,\
+    get_policy_for_different_rewards
 
 def is_valid_file(parser, arg):
     if not os.path.exists(arg):
@@ -54,7 +54,7 @@ def example_driver():
               transition_function=transition_function_env,
               gamma=0.9)
 
-    # get_policy_for_different_rewards(mdp)
+    get_policy_for_different_rewards(mdp)
 
     print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
     print("@@@@@@ The board and rewards @@@@@@")
