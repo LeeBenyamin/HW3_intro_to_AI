@@ -179,25 +179,22 @@ def evaluate_state(mdp, U, state, epsilon=1e-4):
         R = float(mdp.board[i][j])
     else:
         return None, None
-
+    max_utility = 0
     utility_actions = {}
     max_actions = [actions_keys[0]]  # default option
-    for act in list(mdp.actions):
-        curr_utility = 0
-        # list_utility = []
-        # probability = mdp.transition_function[act]
-        # for next_state in [mdp.step((i, j), a) for a in mdp.actions.keys()]:
-        #     next_i, next_j = next_state[0], next_state[1]
-        #     list_utility.append(U[next_i][next_j])
-        # curr_utility = sum(np.array(probability) * np.array(list_utility))
-        for index, probability in enumerate(mdp.transition_function[act]):
-            next_state = mdp.step((i,j), actions_keys[index])
-            next_i, next_j = next_state[0], next_state[1]
-            curr_utility += probability * U[next_i][next_j]
-        utility_actions[act] = R + mdp.gamma * curr_utility
-    # max_utility = max(utility_actions.values())
-    # max_actions = [act for act in mdp.actions.keys() if utility_actions[act] >= max_utility - epsilon]
-    return utility_actions , R
+    if state not in mdp.terminal_states:
+        i, j = state
+        for act in mdp.actions.keys():
+            curr_utility = 0
+            for index, probability in enumerate(mdp.transition_function[act]):
+                next_state = mdp.step((i, j), actions_keys[index])
+                next_i, next_j = next_state[0], next_state[1]
+                curr_utility += probability * U[next_i][next_j]
+            utility_actions[act] = curr_utility
+        max_utility = max(utility_actions.values())
+        max_actions = [act for act in mdp.actions.keys() if utility_actions[act] >= max_utility - epsilon]
+    return max_utility, max_actions, R
+
 
 def print_policy2(mdp, policy):
     actions_chars = {
@@ -229,51 +226,6 @@ def print_policy2(mdp, policy):
         res += "\n"
     print(res)
 
-def print_policy_ours(mdp, policy):
-    cell_r_size = 2
-    cell_c_size = 2
-
-    actions_chars = {
-        "UP": "↑",
-        "DOWN": "↓",
-        "RIGHT": "→",
-        "LEFT": "←",
-        "WALL": "█",
-        None: ""
-    }
-    table_size = 1 + mdp.num_col * (cell_c_size + 1) + 1
-
-    res = ""
-
-    for r in range(mdp.num_row):
-        if r == 0:
-            res += f"┌{'┬'.join(['─' * cell_c_size] * mdp.num_col)}┐\n"
-        else:
-            res += f"├{'┼'.join(['─' * cell_c_size] * mdp.num_col)}┤\n"
-        for _ in range(cell_r_size):
-            res += f"│{'│'.join([' ' * cell_c_size] * mdp.num_col)}│\n"
-        if r == mdp.num_row - 1:
-            res += f"└{'┴'.join(['─' * cell_c_size] * mdp.num_col)}┘\n"
-
-    res = list(res)
-
-    for i, row in enumerate(policy):
-        for j, actions in enumerate(row):
-            if actions == 0:
-                actions = [mdp.board[i][j].lower(), "WALL"]
-            if (i, j) in mdp.terminal_states:
-                # actions = ["1", mdp.board[i][j]]
-                actions = [mdp.board[i][j]]
-            for action in actions:
-                chars_to_curr_board = actions_chars.get(action, action)
-                for curr_char in chars_to_curr_board:
-                    row = 1 + i * (cell_r_size + 1)
-                    col = 1 + j * (cell_c_size + 1)
-
-                    res[row * table_size + col] = curr_char
-
-    print("".join(res))
-
 def get_all_policies(mdp, U, prev_policy=None):  # You can add more input parameters as needed
     # Given the mdp, and the utility value U (which satisfies the Belman equation)
     # print / display all the policies that maintain this value
@@ -289,14 +241,15 @@ def get_all_policies(mdp, U, prev_policy=None):  # You can add more input parame
                     and mdp.board[i][j] != 'WALL']
     for s in valid_states:
         i, j = s
-        utility_actions, R = evaluate_state(mdp, U, s)
+        _, utility_actions, R = evaluate_state(mdp, U, s)
         if utility_actions is not None:
-            policy[i][j] = [action for action in utility_actions.keys() if round(utility_actions[action], 2) == round(U[i][j], 2)]
+            # policy[i][j] = [action for action in utility_actions.keys() if round(utility_actions[action], 2) == round(U[i][j], 2)]
+            policy[i][j] = utility_actions
             if prev_policy:
                 prev_acts = prev_policy[i][j]
                 if utility_actions != prev_acts:
                     unchanged = False
-            num_policies += len(utility_actions)
+            num_policies *= len(utility_actions)
     # Visualize or print the policies
     # (You can implement visualization based on your preference)
 # TODO print policy for terminal states and wall

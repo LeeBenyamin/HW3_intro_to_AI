@@ -1,8 +1,10 @@
 import argparse
 import os
 from mdp import MDP
-from mdp_implementation import value_iteration, get_policy, policy_evaluation, policy_iteration, get_all_policies,\
-    get_policy_for_different_rewards
+from mdp_implementation import value_iteration, get_policy, policy_evaluation, policy_iteration, get_all_policies, \
+    print_policy2, get_policy_for_different_rewards
+# from value_and_policy_iteration import value_iteration, get_policy, policy_evaluation, policy_iteration
+# from bonus import get_all_policies, get_policy_for_different_rewards
 
 def is_valid_file(parser, arg):
     if not os.path.exists(arg):
