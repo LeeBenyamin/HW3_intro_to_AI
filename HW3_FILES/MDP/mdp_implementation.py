@@ -326,28 +326,19 @@ def get_policy_for_different_rewards(mdp):  # You can add more input parameters 
     min_reward = min(rewards)
 
     mdp_array = np.array(mdp.board)
-    mask = np.zeros_like(mdp_array, dtype=bool)
-    all_states = [(i, j) for i in range(mdp.num_row) for j in range(mdp.num_col)]
-    for s in all_states:
-        i, j = s
-        if mdp.board[i][j] == 'WALL' or s in mdp.terminal_states:
-            mask[i][j] = False
-        else:
-            mask[i][j] = True
-    print(mask)
-
-    # Invert the mask to get True for non-terminal states and float elements
     policies_list = []
     prev_policies = None
-
     reward = min_reward
     r_res = 0.005
-    while reward <= max_reward:
-        reward = round(reward, 5)
+    all_states = [(i, j) for i in range(mdp.num_row) for j in range(mdp.num_col)]
 
+    while reward <= max_reward:
+        reward = round(reward, 3)
         current_mdp = deepcopy(mdp)
         current_mdp_array = np.copy(mdp_array)
-        current_mdp_array[mask] = str(reward)
+        for state in all_states:
+            if state not in mdp.terminal_states and mdp_array[state] != 'WALL':
+                current_mdp_array[state] = str(reward)
         current_mdp.board = current_mdp_array.tolist()
 
         U = value_iteration(current_mdp, U_init=init_u)
@@ -356,7 +347,6 @@ def get_policy_for_different_rewards(mdp):  # You can add more input parameters 
         if not unchanged or not policies_list:
             policies_list.append([reward + r_res, policies])
 
-        # policies_list.append([reward + r_res, get_policy(current_mdp, U)])
         prev_policies = policies
         reward += r_res
 
