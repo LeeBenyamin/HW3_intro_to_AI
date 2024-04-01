@@ -54,7 +54,8 @@ def example_driver():
               transition_function=transition_function_env,
               gamma=0.9)
 
-    get_policy_for_different_rewards(mdp)
+    range_list = get_policy_for_different_rewards(mdp)
+    print(range_list)
 
     print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
     print("@@@@@@ The board and rewards @@@@@@")
@@ -78,10 +79,6 @@ def example_driver():
     policy = get_policy(mdp, U_new)
     mdp.print_policy(policy)
 
-    n_policies, _, _ = get_all_policies(mdp, U_new)
-    print("Num of policies: ")
-    print(n_policies)
-
     print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
     print("@@@@@@@@@ Policy iteration @@@@@@@@")
     print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
@@ -102,6 +99,12 @@ def example_driver():
 
     print("Done!")
 
+    U = [[0.2, 0.2, 0.2, 1],
+         [0.2, 0, 0.2, -1],
+         [0.2, 0, 0.2, 0.2]]
+    n_policies, _, _ = get_all_policies(mdp, U)
+    print("Num of policies: ")
+    print(n_policies)
 
 if __name__ == '__main__':
 

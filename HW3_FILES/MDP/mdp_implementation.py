@@ -226,6 +226,51 @@ def print_policy2(mdp, policy):
         res += "\n"
     print(res)
 
+def print_policy_ours(mdp, policy):
+    cell_r_size = 2
+    cell_c_size = 2
+
+    actions_chars = {
+        "UP": "↑",
+        "DOWN": "↓",
+        "RIGHT": "→",
+        "LEFT": "←",
+        "WALL": "█",
+        None: ""
+    }
+    table_size = 1 + mdp.num_col * (cell_c_size + 1) + 1
+
+    res = ""
+
+    for r in range(mdp.num_row):
+        if r == 0:
+            res += f"┌{'┬'.join(['─' * cell_c_size] * mdp.num_col)}┐\n"
+        else:
+            res += f"├{'┼'.join(['─' * cell_c_size] * mdp.num_col)}┤\n"
+        for _ in range(cell_r_size):
+            res += f"│{'│'.join([' ' * cell_c_size] * mdp.num_col)}│\n"
+        if r == mdp.num_row - 1:
+            res += f"└{'┴'.join(['─' * cell_c_size] * mdp.num_col)}┘\n"
+
+    res = list(res)
+
+    for i, row in enumerate(policy):
+        for j, actions in enumerate(row):
+            if actions == 0:
+                actions = [mdp.board[i][j].lower(), "WALL"]
+            if (i, j) in mdp.terminal_states:
+                # actions = ["1", mdp.board[i][j]]
+                actions = [mdp.board[i][j]]
+            for action in actions:
+                chars_to_curr_board = actions_chars.get(action, action)
+                for curr_char in chars_to_curr_board:
+                    row = 1 + i * (cell_r_size + 1)
+                    col = 1 + j * (cell_c_size + 1)
+
+                    res[row * table_size + col] = curr_char
+
+    print("".join(res))
+
 def get_all_policies(mdp, U, prev_policy=None):  # You can add more input parameters as needed
     # Given the mdp, and the utility value U (which satisfies the Belman equation)
     # print / display all the policies that maintain this value
@@ -278,7 +323,7 @@ def get_policy_for_different_rewards(mdp):  # You can add more input parameters 
         max_reward = 0
     else:
         max_reward = max(rewards)
-    min_reward = min(rewards) - max(rewards)
+    min_reward = min(rewards)
 
     mdp_array = np.array(mdp.board)
     mask = np.zeros_like(mdp_array, dtype=bool)
@@ -315,19 +360,29 @@ def get_policy_for_different_rewards(mdp):  # You can add more input parameters 
         prev_policies = policies
         reward += r_res
 
-    for i in range(len(policies_list)):
-        reward, policies = policies_list[i]
+    range_list = []
+    for idx in range(len(policies_list)):
+        reward, policies = policies_list[idx]
         print_policy2(mdp, policies)
 
-        range_str = ""
-        if i > 0:
-            range_str += "{:.3f} <= R(s)".format(policies_list[i - 1][0])
+        string_for_range = ""
+        if idx > 0:
+            current_range = policies_list[idx - 1][0]
+            string_for_range += "{:.3f} <= R(s)".format(current_range)
+            range_list.append(current_range)
 
-        if i < len(policies_list) - 1:
-            if range_str:
-                range_str += " < "
-            range_str += "{:.3f}".format(reward)
+        else:
+            string_for_range += " -5 <= R(s) "
 
-        if range_str:
-            print(range_str)
+        if idx < len(policies_list) - 1:
+            if string_for_range:
+                string_for_range += " < "
+            string_for_range += "{:.3f}".format(reward)
+
+        else:
+            string_for_range += " < 5 "
+
+        if string_for_range:
+            print(string_for_range)
+    return range_list
     # ========================
