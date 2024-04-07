@@ -182,7 +182,7 @@ def evaluate_state(mdp, U, state, epsilon=1e-3):
 
         max_utility = max(utility_actions.values())
 
-        max_actions = [act for act in mdp.actions.keys() if abs(utility_actions[act] - U[i][j]) <= epsilon]
+        max_actions = [act for act in mdp.actions.keys() if abs(utility_actions[act] - max_utility) <= epsilon]
         if not max_actions:
             max_actions = [actions_keys[0]]  # default option
     return max_utility, max_actions, R
@@ -292,7 +292,7 @@ def get_policy_for_different_rewards(mdp, epsilon = 1e-3):  # You can add more i
         curr_rewards_board = update_board(curr_rewards_board, reward, current_mdp, num_after_the_dot)
         current_mdp.board = curr_rewards_board
 
-        U = value_iteration(current_mdp, U_init=init_u)
+        U = value_iteration(current_mdp, U_init=init_u, epsilon=epsilon)
         _, policies, unchanged = get_all_policies(current_mdp, U, prev_policies, epsilon)
 
         if not unchanged or not policies_list:
