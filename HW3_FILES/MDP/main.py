@@ -54,8 +54,8 @@ def example_driver():
               transition_function=transition_function_env,
               gamma=0.9)
 
-    range_list = get_policy_for_different_rewards(mdp)
-    print(range_list)
+    # range_list = get_policy_for_different_rewards(mdp)
+    # print(range_list)
 
     print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
     print("@@@@@@ The board and rewards @@@@@@")
