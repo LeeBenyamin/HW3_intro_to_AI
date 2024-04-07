@@ -97,11 +97,11 @@ def example_driver():
     policy_new = policy_iteration(mdp, policy)
     mdp.print_policy(policy_new)
 
-    print("Done!")
+    print("Done!\n")
 
-    U = [[0.2, 0.2, 0.2, 1],
-         [0.2, 0, 0.2, -1],
-         [0.2, 0, 0.2, 0.2]]
+    U = [[0.749, 0.819, 0.876, 1.0],
+         [0.692, 0, 0.564, -1.0],
+         [0.623, 0.566, 0.518, 0.252]]
     n_policies, _, _ = get_all_policies(mdp, U)
     print("Num of policies: ")
     print(n_policies)
