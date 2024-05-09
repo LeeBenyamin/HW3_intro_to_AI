@@ -53,7 +53,8 @@ class ID3:
         right_entropy = ID3.entropy(right, right_labels)
         left_entropy = ID3.entropy(left, left_labels)
 
-        info_gain_value = - (right_entropy * len(right) / total) - (left_entropy * len(left) / total)
+        info_gain_value -= (right_entropy * len(right) / total)
+        info_gain_value -= (left_entropy * len(left) / total)
         # ========================
 
         return info_gain_value
