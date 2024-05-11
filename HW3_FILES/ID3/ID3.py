@@ -53,7 +53,8 @@ class ID3:
         right_entropy = ID3.entropy(right, right_labels)
         left_entropy = ID3.entropy(left, left_labels)
 
-        info_gain_value = - (right_entropy * len(right) / total) - (left_entropy * len(left) / total)
+        info_gain_value -= (right_entropy * len(right) / total)
+        info_gain_value -= (left_entropy * len(left) / total)
         # ========================
 
         return info_gain_value
@@ -78,7 +79,7 @@ class ID3:
                                                                          if not question.match(rows[idx_row])]
         gain = self.info_gain(true_rows, true_labels, false_rows, false_labels, current_uncertainty)
 
-        return gain, true_rows, true_labels, false_rows, false_labels
+        return gain, np.array(true_rows), np.array(true_labels), np.array(false_rows), np.array(false_labels)
 
     def find_best_split(self, rows, labels):
         """

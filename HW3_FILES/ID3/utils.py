@@ -14,8 +14,8 @@ from sklearn.model_selection import KFold
 ========================================================================
 """
 
-ID1 = 207502444  # TODO: change it to your personal ID
-ID2 = 987654321  # TODO: change it to your personal ID 
+ID1 = 207502444  # Lee ID
+ID2 = 208607689  # Shira ID
 
 
 ID_KEY = ID1+ID2%1000000000
@@ -61,9 +61,9 @@ def load_data_set(clf_type: str):
     """
     assert clf_type == 'ID3' , 'The parameter clf_type must be ID3'
     hw_path = str(pathlib.Path(__file__).parent.absolute())
-    dataset_path = hw_path + f"\\{clf_type}-dataset\\"
-    train_file_path = dataset_path + "\\train.csv"
-    test_file_path = dataset_path + "\\test.csv"
+    dataset_path = hw_path + f"/{clf_type}-dataset/"
+    train_file_path = dataset_path + "train.csv"
+    test_file_path = dataset_path + "test.csv"
     # Import all columns omitting the fist which consists the names of the attributes
 
     train_dataset = pd.read_csv(train_file_path)
