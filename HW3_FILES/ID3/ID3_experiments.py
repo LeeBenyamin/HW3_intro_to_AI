@@ -91,7 +91,7 @@ def cross_validation_experiment(plot_graph=True):
     num_folds = 5
 
     # ====== YOUR CODE: ======
-    m_choices = [10, 20, 30, 40, 50, 60, 70, 80]
+    m_choices = [10, 20, 30, 40, 50]
     num_folds = len(m_choices)
     assert len(m_choices) >= 5, 'fill the m_choices list with  at least 5 different values for M.'
     best_m, accuracies = find_best_pruning_m(train_dataset, m_choices, num_folds)
